@@ -7,8 +7,8 @@ import { fetchCategories } from '../store/slices/CategorySlice.js'
 const sortOptions = ['Popularity', 'Price: Low to High', 'Price: High to Low', 'Date: Soonest']
 
 export default function EventsPage() {
-  const { eventList } = useSelector(state => state?.event)
-  const { categoryList } = useSelector(state => state?.category)
+  const { eventList, loading, error } = useSelector(state => state?.event)
+  const { categoryList, loading: catLoading, error: catError } = useSelector(state => state?.category)
   const dispatch = useDispatch()
   
   const [showFilters, setShowFilters] = useState(false)
@@ -89,21 +89,28 @@ export default function EventsPage() {
           </select>
         </div>
 
-        {/* Category Chips */}
-        <div className="flex gap-2 flex-wrap mb-8">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setFilters({ ...filters, category: cat })}
-              className={`category-chip px-4 py-2 rounded-xl text-sm border transition-all ${
-                filters.category === cat
-                  ? 'active bg-brand-500 text-dark-900 border-brand-500 font-semibold'
-                  : 'border-white/10 text-slate-400 glass-card'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        <div className="flex gap-2 flex-wrap mb-8 min-h-[42px]">
+          {catLoading ? (
+            Array(5).fill(0).map((_, i) => (
+              <div key={i} className="w-24 h-10 rounded-xl bg-white/5 animate-pulse border border-white/10" />
+            ))
+          ) : catError ? (
+            <span className="text-red-400 text-xs italic">Failed to load categories</span>
+          ) : (
+            categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setFilters({ ...filters, category: cat })}
+                className={`category-chip px-4 py-2 rounded-xl text-sm border transition-all ${
+                  filters.category === cat
+                    ? 'active bg-brand-500 text-dark-900 border-brand-500 font-semibold'
+                    : 'border-white/10 text-slate-400 glass-card'
+                }`}
+              >
+                {cat}
+              </button>
+            ))
+          )}
         </div>
 
         {/* Extended Filters */}
@@ -141,18 +148,39 @@ export default function EventsPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {filtered.map(event => (
-            <EventCard key={event._id} event={event} />
-          ))}
+          {loading ? (
+            Array(8).fill(0).map((_, i) => (
+              <div key={i} className="glass-card rounded-2xl overflow-hidden border border-white/5 animate-pulse">
+                <div className="aspect-[16/10] bg-white/10" />
+                <div className="p-5 space-y-4">
+                  <div className="flex justify-between items-center"><div className="w-16 h-4 bg-white/10 rounded-full" /><div className="w-8 h-4 bg-white/10 rounded-full" /></div>
+                  <div className="space-y-2"><div className="w-full h-5 bg-white/10 rounded-lg" /><div className="w-2/3 h-5 bg-white/10 rounded-lg" /></div>
+                  <div className="flex gap-2 pt-2"><div className="w-4 h-4 bg-white/10 rounded-full" /><div className="w-24 h-4 bg-white/5 rounded-md" /></div>
+                </div>
+              </div>
+            ))
+          ) : error ? (
+            <div className="col-span-full py-16 text-center glass-card rounded-3xl border border-red-500/20 bg-red-500/5">
+              <div className="text-3xl mb-4">⚠️</div>
+              <h3 className="text-white font-bold text-xl mb-2">Failed to load events</h3>
+              <p className="text-slate-500 mb-6">{error?.message || "An error occurred while fetching events."}</p>
+              <button onClick={() => dispatch(fetchEvents())} className="px-6 py-2 rounded-xl bg-brand-500 text-white hover:bg-brand-400 transition-all">Retry</button>
+            </div>
+          ) : (
+            <>
+              {filtered.map(event => (
+                <EventCard key={event._id} event={event} />
+              ))}
+              {filtered.length === 0 && (
+                <div className="col-span-full text-center py-20">
+                  <div className="text-5xl mb-4">🔍</div>
+                  <h3 className="font-display font-bold text-2xl text-white mb-2">No events found</h3>
+                  <p className="text-slate-500">Try adjusting your filters or search terms</p>
+                </div>
+              )}
+            </>
+          )}
         </div>
-
-        {filtered.length === 0 && (
-          <div className="text-center py-20">
-            <div className="text-5xl mb-4">🔍</div>
-            <h3 className="font-display font-bold text-2xl text-white mb-2">No events found</h3>
-            <p className="text-slate-500">Try adjusting your filters or search terms</p>
-          </div>
-        )}
       </div>
     </div>
   )

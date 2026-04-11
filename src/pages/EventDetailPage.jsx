@@ -6,7 +6,7 @@ import { fetchSingleEvents } from '../store/slices/EventSlice.js'
 
 export default function EventDetailPage() {
   const { id } = useParams()
-  const { singleEventData, loading } = useSelector(state => state?.event)
+  const { singleEventData, loading, error } = useSelector(state => state?.event)
   const { isAuthenticated } = useSelector(state => state?.auth)
   const { selectedTickets, loading: bookingLoading } = useSelector(state => state?.booking)
   const dispatch = useDispatch()
@@ -22,18 +22,35 @@ export default function EventDetailPage() {
   const event = singleEventData?.events
   
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center">
-        <p className="text-slate-400 mb-4 animate-pulse">Loading event...</p>
-      </div>
+    <div className="min-h-[70vh] flex flex-col items-center justify-center">
+      <div className="w-12 h-12 rounded-full border-2 border-brand-500/20 border-t-brand-500 animate-spin mb-4" />
+      <p className="text-slate-400 animate-pulse font-mono text-sm tracking-widest uppercase">Loading Event Details</p>
     </div>
   )
 
-  if (!event) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center">
-        <p className="text-slate-400 mb-4">Event not found</p>
-        <Link to="/events" className="text-brand-400 hover:text-brand-300">← Back to Events</Link>
+  if (error || !event) return (
+    <div className="min-h-[70vh] flex items-center justify-center px-4">
+      <div className="max-w-md w-full glass-card rounded-3xl p-8 border border-white/10 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center text-3xl mx-auto mb-6">⚠️</div>
+        <h3 className="font-display font-bold text-2xl text-white mb-2">
+          {error ? 'Failed to load event' : 'Event not found'}
+        </h3>
+        <p className="text-slate-500 mb-8 leading-relaxed">
+          {error?.message || error || "The event you're looking for might have been cancelled or the link is invalid."}
+        </p>
+        <div className="flex flex-col gap-3">
+          {error && (
+            <button 
+              onClick={() => dispatch(fetchSingleEvents({ id }))}
+              className="w-full py-3 rounded-xl bg-brand-500 text-white font-semibold hover:bg-brand-400 transition-all"
+            >
+              Try Again
+            </button>
+          )}
+          <Link to="/events" className="w-full py-3 rounded-xl glass-card border border-white/10 text-white font-medium hover:bg-white/5 transition-all">
+            Browse Other Events
+          </Link>
+        </div>
       </div>
     </div>
   )

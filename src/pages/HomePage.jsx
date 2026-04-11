@@ -24,14 +24,58 @@ const stats = [
 
 export default function HomePage() {
    const { featuredEvents } = useSelector(s => s.events)
-   const{eventList}=useSelector((state)=>state?.event)
- const {categoryList}=useSelector((state)=>state?.category)
+  const { eventList, loading: eventsLoading, error: eventsError } = useSelector((state) => state?.event)
+  const { categoryList, loading: categoriesLoading, error: categoriesError } = useSelector((state) => state?.category)
   const dispatch = useDispatch()
-  useEffect(()=>{
-dispatch(fetchCategories())
-dispatch(fetchEvents())
-  },[])
-console.log("eventList",eventList);
+  
+  useEffect(() => {
+    dispatch(fetchCategories())
+    dispatch(fetchEvents())
+  }, [dispatch])
+
+  // Skeleton Components
+  const CategorySkeleton = () => (
+    <div className="glass-card rounded-2xl p-5 flex flex-col items-center gap-2 text-center animate-pulse">
+      <div className="w-16 h-4 bg-white/10 rounded-full mb-1" />
+      <div className="w-24 h-3 bg-white/5 rounded-full" />
+    </div>
+  )
+
+  const EventSkeleton = () => (
+    <div className="glass-card rounded-2xl overflow-hidden border border-white/5 animate-pulse">
+      <div className="aspect-[16/10] bg-white/10" />
+      <div className="p-5 space-y-4">
+        <div className="flex justify-between items-center">
+          <div className="w-16 h-4 bg-white/10 rounded-full" />
+          <div className="w-8 h-4 bg-white/10 rounded-full" />
+        </div>
+        <div className="space-y-2">
+          <div className="w-full h-5 bg-white/10 rounded-lg" />
+          <div className="w-2/3 h-5 bg-white/10 rounded-lg" />
+        </div>
+        <div className="flex gap-2 pt-2">
+          <div className="w-4 h-4 bg-white/10 rounded-full" />
+          <div className="w-24 h-4 bg-white/5 rounded-md" />
+        </div>
+      </div>
+    </div>
+  )
+
+  const ErrorState = ({ message, onRetry }) => (
+    <div className="col-span-full py-10 flex flex-col items-center justify-center glass-card rounded-3xl border border-red-500/20 bg-red-500/5">
+      <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center text-2xl mb-4">⚠️</div>
+      <h3 className="text-white font-semibold mb-2">Oops! Something went wrong</h3>
+      <p className="text-slate-400 text-sm mb-6 max-w-md text-center">
+        {message || "We encountered an error while fetching the data. Please check your connection and try again."}
+      </p>
+      <button 
+        onClick={onRetry}
+        className="px-6 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-sm transition-all border border-white/10"
+      >
+        Try Again
+      </button>
+    </div>
+  )
 
   return (
     <div className="overflow-x-hidden">
@@ -142,17 +186,25 @@ console.log("eventList",eventList);
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-          {categoryList?.categories?.map((cat, i) => (
-            <Link
-              key={i}
-              to={`/events?category=${cat.name}`}
-              className="glass-card glass-card-hover rounded-2xl p-5 flex flex-col items-center gap-2 text-center group"
-            >
-              {/* <span className="text-2xl group-hover:scale-125 transition-transform">{cat.icon}</span> */}
-              <span className="text-white text-sm font-medium">{cat.categoryName}</span>
-              <span className="text-slate-600 text-xs font-mono">{cat.description}</span>
-            </Link>
-          ))}
+          {categoriesLoading ? (
+            Array(6).fill(0).map((_, i) => <CategorySkeleton key={i} />)
+          ) : categoriesError ? (
+            <ErrorState 
+              message={categoriesError?.message || categoriesError} 
+              onRetry={() => dispatch(fetchCategories())} 
+            />
+          ) : (
+            categoryList?.categories?.map((cat, i) => (
+              <Link
+                key={i}
+                to={`/events?category=${cat.categoryName}`}
+                className="glass-card glass-card-hover rounded-2xl p-5 flex flex-col items-center gap-2 text-center group"
+              >
+                <span className="text-white text-sm font-medium">{cat.categoryName}</span>
+                <span className="text-slate-600 text-xs font-mono line-clamp-1">{cat.description}</span>
+              </Link>
+            ))
+          )}
         </div>
       </section>
 
@@ -170,9 +222,18 @@ console.log("eventList",eventList);
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {eventList?.events?.map(event => (
-              <EventCard key={event._id} event={event} />
-            ))}
+            {eventsLoading ? (
+              Array(4).fill(0).map((_, i) => <EventSkeleton key={i} />)
+            ) : eventsError ? (
+              <ErrorState 
+                message={eventsError?.message || eventsError} 
+                onRetry={() => dispatch(fetchEvents())} 
+              />
+            ) : (
+              eventList?.events?.map(event => (
+                <EventCard key={event._id} event={event} />
+              ))
+            )}
           </div>
         </div>
       </section>
