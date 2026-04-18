@@ -23,7 +23,8 @@ const MiniBar = ({ pct, color }) => (
 )
 
 export default function AdminDashboardPage() {
-  const { events } = useSelector(s => s.events)
+  const { eventList } = useSelector(s => s.event)
+  const events = Array.isArray(eventList?.events) ? eventList.events : [];
   const { bookings } = useSelector(s => s.booking)
 
   const totalRevenue = bookings.reduce((s, b) => s + b.totalAmount, 0)
@@ -104,20 +105,28 @@ export default function AdminDashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {events.slice(0, 5).map(e => (
-                <tr key={e.id} className="border-b border-white/[0.03]">
-                  <td className="px-5 py-3 text-sm text-white font-medium">{e.title}</td>
-                  <td className="px-5 py-3">
-                    <span className="tag-badge">{e.category}</span>
-                  </td>
-                  <td className="px-5 py-3 text-sm text-slate-400">{new Date(e.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</td>
-                  <td className="px-5 py-3 text-sm text-slate-400">{e.seatsAvailable}/{e.seatsTotal}</td>
-                  <td className="px-5 py-3 text-sm text-white">₹{(e.price * (e.seatsTotal - e.seatsAvailable)).toLocaleString()}</td>
-                  <td className="px-5 py-3">
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-400">Active</span>
-                  </td>
-                </tr>
-              ))}
+              {events.slice(0, 5).map(e => {
+                const categoryName = typeof e.category === 'object' && e.category !== null 
+                  ? e.category.categoryName 
+                  : (e.category || 'General');
+
+                return (
+                  <tr key={e._id} className="border-b border-white/[0.03]">
+                    <td className="px-5 py-3 text-sm text-white font-medium">{e.eventName}</td>
+                    <td className="px-5 py-3">
+                      <span className="tag-badge">{categoryName}</span>
+                    </td>
+                    <td className="px-5 py-3 text-sm text-slate-400">
+                      {new Date(e.eventDate || e.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                    </td>
+                    <td className="px-5 py-3 text-sm text-slate-400">{e.availableSeats}/{e.totalSeats}</td>
+                    <td className="px-5 py-3 text-sm text-white">₹{((e.price || 0) * ((e.totalSeats || 0) - (e.availableSeats || 0))).toLocaleString()}</td>
+                    <td className="px-5 py-3">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-400">{e.status || 'Active'}</span>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>

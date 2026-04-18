@@ -71,9 +71,12 @@ export default function EventDetailPage() {
   const total = price * selectedTickets;
   const occupancy = Math.round((1 - available / totalSeats) * 100);
   
-  const imageUrl = event.imageUrl?.startsWith('http') || event.imageUrl?.startsWith('/')
-    ? event.imageUrl
-    : import.meta.env.VITE_API_BASE_URL?.replace(/\/api$/, '') + '/uploads/' + event.imageUrl || '/' + event.imageUrl;
+  const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/api$/, '') || '';
+  const imageUrl = event.imageUrl
+    ? (event.imageUrl.startsWith('http') || event.imageUrl.startsWith('blob')
+        ? event.imageUrl
+        : `${baseUrl}${event.imageUrl.startsWith('/') ? '' : '/'}${event.imageUrl}`)
+    : 'https://placehold.co/600x400/1a1a1a/fff?text=No+Image';
 
   const categoryName = typeof event.category === 'object' && event.category !== null 
     ? event.category.categoryName 

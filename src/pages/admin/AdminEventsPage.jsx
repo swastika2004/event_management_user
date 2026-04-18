@@ -3,13 +3,16 @@ import { useSelector, useDispatch } from 'react-redux'
 // import { deleteEvent } from '../../store/slices/eventSlice.js'
 
 export default function AdminEventsPage() {
-  const { events } = useSelector(s => s.events)
+  const { eventList, loading } = useSelector(s => s.event)
+  const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/api$/, '') || '';
+  const events = Array.isArray(eventList?.events) ? eventList.events : [];
+  
   const dispatch = useDispatch()
   const [search, setSearch] = useState('')
   const [showModal, setShowModal] = useState(false)
 
   const filtered = events.filter(e =>
-    !search || e.title.toLowerCase().includes(search.toLowerCase())
+    !search || e.eventName?.toLowerCase().includes(search.toLowerCase())
   )
 
   return (
@@ -51,28 +54,39 @@ export default function AdminEventsPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(event => (
-                <tr key={event.id} className="border-b border-white/[0.03]">
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-3">
-                      <img src={event.image} alt="" className="w-8 h-8 rounded-lg object-cover" />
-                      <span className="text-sm text-white font-medium max-w-xs truncate">{event.title}</span>
-                    </div>
-                  </td>
-                  <td className="px-5 py-3"><span className="tag-badge">{event.category}</span></td>
-                  <td className="px-5 py-3 text-sm text-slate-400 whitespace-nowrap">
-                    {new Date(event.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: '2-digit' })}
-                  </td>
-                  <td className="px-5 py-3 text-sm text-slate-400 max-w-xs truncate">{event.venue}</td>
-                  <td className="px-5 py-3 text-sm text-white">₹{event.price.toLocaleString()}</td>
-                  <td className="px-5 py-3 text-sm text-slate-400">{event.seatsAvailable}/{event.seatsTotal}</td>
+              {filtered.map(event => {
+                const imageUrl = event.imageUrl
+                  ? (event.imageUrl.startsWith('http') || event.imageUrl.startsWith('blob')
+                      ? event.imageUrl
+                      : `${baseUrl}${event.imageUrl.startsWith('/') ? '' : '/'}${event.imageUrl}`)
+                  : 'https://placehold.co/600x400/1a1a1a/fff?text=No+Image';
+
+                const categoryName = typeof event.category === 'object' && event.category !== null 
+                  ? event.category.categoryName 
+                  : (event.category || 'General');
+
+                return (
+                  <tr key={event._id} className="border-b border-white/[0.03]">
+                    <td className="px-5 py-3">
+                      <div className="flex items-center gap-3">
+                        <img src={imageUrl} alt="" className="w-8 h-8 rounded-lg object-cover" />
+                        <span className="text-sm text-white font-medium max-w-xs truncate">{event.eventName}</span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-3"><span className="tag-badge">{categoryName}</span></td>
+                    <td className="px-5 py-3 text-sm text-slate-400 whitespace-nowrap">
+                      {new Date(event.eventDate || event.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: '2-digit' })}
+                    </td>
+                    <td className="px-5 py-3 text-sm text-slate-400 max-w-xs truncate">{event.venue}</td>
+                    <td className="px-5 py-3 text-sm text-white">₹{(event.price || 0).toLocaleString()}</td>
+                    <td className="px-5 py-3 text-sm text-slate-400">{event.availableSeats}/{event.totalSeats}</td>
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-2">
                       <button className="p-1.5 rounded-lg text-slate-500 hover:text-blue-400 hover:bg-blue-500/10 transition-all">
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                       </button>
                       <button
-                        onClick={() => dispatch(deleteEvent(event.id))}
+                        onClick={() => dispatch(deleteEvent(event._id))}
                         className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all"
                       >
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -80,7 +94,7 @@ export default function AdminEventsPage() {
                     </div>
                   </td>
                 </tr>
-              ))}
+              )})}
             </tbody>
           </table>
         </div>

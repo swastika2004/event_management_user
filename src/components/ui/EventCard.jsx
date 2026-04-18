@@ -17,9 +17,12 @@ export default function EventCard({ event }) {
   const dateStr = eventDateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
   const timeStr = eventDateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
-  const imageUrl = event.imageUrl?.startsWith('http') || event.imageUrl?.startsWith('/')
-    ? event.imageUrl
-    : import.meta.env.VITE_API_BASE_URL?.replace(/\/api$/, '') + '/uploads/' + event.imageUrl || '/' + event.imageUrl;
+  const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/api$/, '') || '';
+  const imageUrl = event.imageUrl
+    ? (event.imageUrl.startsWith('http') || event.imageUrl.startsWith('blob')
+        ? event.imageUrl
+        : `${baseUrl}${event.imageUrl.startsWith('/') ? '' : '/'}${event.imageUrl}`)
+    : 'https://placehold.co/600x400/1a1a1a/fff?text=No+Image';
 
   const categoryColors = {
     Music: 'bg-pink-500/15 text-pink-400',
