@@ -37,9 +37,9 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         <div className="glass-card rounded-3xl p-8 border border-white/10">
           <div className="text-center mb-8">
-            <div className="w-12 h-12 rounded-2xl bg-brand-500 flex items-center justify-center text-white font-display font-bold text-lg mx-auto mb-4">E</div>
+            <div className="w-12 h-12 rounded-2xl bg-brand-500 flex items-center justify-center text-white font-display font-bold text-lg mx-auto mb-4">V</div>
             <h1 className="font-display font-bold text-2xl text-white mb-1">Create Account</h1>
-            <p className="text-slate-500 text-sm">Join 50,000+ event lovers on EventIQ</p>
+            <p className="text-slate-500 text-sm">Join 50,000+ event lovers on Vibe Check</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

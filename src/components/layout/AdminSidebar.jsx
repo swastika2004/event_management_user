@@ -60,8 +60,8 @@ export default function AdminSidebar() {
       {/* Logo */}
       <div className="h-16 flex items-center px-5 border-b border-white/[0.06]">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-brand-500 flex items-center justify-center text-white font-bold text-xs">E</div>
-          <span className="font-display font-bold text-lg text-white">Event<span className="gradient-text">IQ</span></span>
+          <div className="w-7 h-7 rounded-lg bg-brand-500 flex items-center justify-center text-white font-bold text-xs">V</div>
+          <span className="font-display font-bold text-lg text-white">Vibe <span className="gradient-text">Check</span></span>
         </Link>
         <span className="ml-2 text-xs font-mono text-purple-400 bg-purple-400/10 px-1.5 py-0.5 rounded">Admin</span>
       </div>
@@ -94,7 +94,7 @@ export default function AdminSidebar() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-white text-sm font-medium truncate">{user?.name || 'Admin'}</p>
-            <p className="text-slate-500 text-xs truncate">{user?.email || 'admin@eventiq.com'}</p>
+            <p className="text-slate-500 text-xs truncate">{user?.email || 'admin@vibecheck.com'}</p>
           </div>
         </div>
         <button

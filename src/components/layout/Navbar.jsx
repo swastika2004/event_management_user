@@ -30,10 +30,10 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-center text-white font-display font-bold text-sm group-hover:bg-brand-400 transition-colors">
-              E
+              V
             </div>
             <span className="font-display font-bold text-xl text-white">
-              Event<span className="gradient-text">IQ</span>
+              Vibe <span className="gradient-text">Check</span>
             </span>
           </Link>
 

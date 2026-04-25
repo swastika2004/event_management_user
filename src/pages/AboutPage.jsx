@@ -17,7 +17,7 @@ export default function AboutPage() {
             <span className="gradient-text">Event Experience</span>
           </h1>
           <p className="text-slate-400 text-xl max-w-2xl mx-auto leading-relaxed">
-            EventIQ was born from a simple idea: events should be easy to discover, easy to book,
+            Vibe Check was born from a simple idea: events should be easy to discover, easy to book,
             and easy to attend. We're making that a reality for millions across India.
           </p>
         </div>
@@ -30,7 +30,7 @@ export default function AboutPage() {
             <p className="text-brand-400 text-sm font-mono mb-2">// OUR STORY</p>
             <h2 className="font-display font-bold text-3xl text-white mb-4">Built for event lovers, by event lovers</h2>
             <p className="text-slate-400 leading-relaxed mb-4">
-              Founded in 2023, EventIQ started as a small project to solve the chaos of event ticketing.
+              Founded in 2023, Vibe Check started as a small project to solve the chaos of event ticketing.
               Long queues, paper tickets, lost bookings — we've all been there.
             </p>
             <p className="text-slate-400 leading-relaxed">

@@ -275,7 +275,7 @@ export default function HomePage() {
                 <span className="gradient-text">More?</span>
               </h2>
               <p className="text-slate-400 text-lg mb-8 max-w-xl mx-auto">
-                Join 50,000+ event-goers who trust EventIQ for seamless experiences.
+                Join 50,000+ event-goers who trust Vibe Check for seamless experiences.
               </p>
               <Link
                 to="/register"

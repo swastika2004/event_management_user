@@ -9,10 +9,10 @@ export default function Footer() {
           <div className="md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-center text-white font-display font-bold text-sm">
-                E
+                V
               </div>
               <span className="font-display font-bold text-xl text-white">
-                Event<span className="gradient-text">IQ</span>
+                Vibe <span className="gradient-text">Check</span>
               </span>
             </Link>
             <p className="text-slate-500 text-sm leading-relaxed">
@@ -53,7 +53,7 @@ export default function Footer() {
         <hr className="border-white/[0.06] my-8" />
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-slate-600 text-xs">
-            © 2026 EventIQ. All rights reserved.
+            © 2026 Vibe Check. All rights reserved.
           </p>
           <p className="text-slate-700 text-xs font-mono">
             v2.0.0 — Built with ❤️ in India
