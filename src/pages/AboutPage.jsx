@@ -1,9 +1,10 @@
 export default function AboutPage() {
   const team = [
-    { name: 'Arjun Sharma', role: 'CEO & Co-founder', color: 'from-brand-400 to-brand-700' },
-    { name: 'Priya Mehta', role: 'CTO', color: 'from-purple-400 to-purple-700' },
-    { name: 'Rahul Verma', role: 'Head of Design', color: 'from-pink-400 to-pink-700' },
-    { name: 'Ananya Singh', role: 'Head of Marketing', color: 'from-blue-400 to-blue-700' },
+    { name: 'Swastika Roy', role: 'CEO & Co-founder', color: 'from-brand-400 to-brand-700' },
+    { name: 'Anikhet Maity', role: 'CTO', color: 'from-purple-400 to-purple-700' },
+    { name: 'Zarin Siddiqui', role: 'Head of Design', color: 'from-pink-400 to-pink-700' },
+    { name: 'Biprodeep Das', role: 'Head of Marketing', color: 'from-blue-400 to-blue-700' },
+    { name: 'Afzal Imam Khan', role: 'Event Manager', color: 'from-blue-400 to-blue-700' },
   ]
 
   return (
